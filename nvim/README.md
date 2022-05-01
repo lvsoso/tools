@@ -27,5 +27,16 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 :h base-directories
 ~/.local/share/nvim/
 
+# show runtime dir
+:echo $VIMRUNTIME
+/usr/share/nvim/runtime/
+
 ```
+
+
+## 主题
+- nvim-treesitter 语法高亮 https://github.com/nvim-treesitter/nvim-treesitter
+- lua插件 https://github.com/folke/tokyonight.nvim#plugin-support
+
+
 

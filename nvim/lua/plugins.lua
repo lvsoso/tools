@@ -4,7 +4,22 @@ packer.startup({
   function(use)
     -- Packer 可以管理自己本身
     use 'wbthomason/packer.nvim'
-    -- 你的插件列表...
+    --------------------- colorschemes --------------------
+    -- tokyonight
+    use("folke/tokyonight.nvim")
+    -- OceanicNext
+    use("mhartington/oceanic-next")
+    -- gruvbox
+    use({ "ellisonleao/gruvbox.nvim", requires = { "rktjmp/lush.nvim" } })
+    -- zephyr 与treesitter配色有冲突
+    -- use("glepnir/zephyr-nvim")
+    -- nord
+    use("shaunsingh/nord.nvim")
+    -- onedark
+    use("ful1e5/onedark.nvim")
+    -- nightfox
+    use("EdenEast/nightfox.nvim")
+    -------------------------------------------------------
   end,
   config = {
     -- 并发数限制
