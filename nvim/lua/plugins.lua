@@ -23,6 +23,14 @@ packer.startup({
     -- nvim-tree
     -- 依赖 requires
     use({ "kyazdani42/nvim-tree.lua", requires = "kyazdani42/nvim-web-devicons" })
+
+    -- bufferline buffer 图形化
+    use({ "akinsho/bufferline.nvim", requires = { "kyazdani42/nvim-web-devicons", "moll/vim-bbye" }})
+    
+    -- lualine
+    use({ "nvim-lualine/lualine.nvim", requires = { "kyazdani42/nvim-web-devicons" } })
+    use("arkav/lualine-lsp-progress")
+
     -------------------------------------------------------
   end,
   config = {
