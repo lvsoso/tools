@@ -80,7 +80,8 @@ packer.startup({
 
     -- JSON 增强
     use("b0o/schemastore.nvim")
-
+    -- ts server
+    use({ "jose-elias-alvarez/nvim-lsp-ts-utils", requires = "nvim-lua/plenary.nvim" })
   end,
   config = {
     -- 并发数限制

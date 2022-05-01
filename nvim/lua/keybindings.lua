@@ -228,4 +228,14 @@ pluginKeys.cmp = function(cmp)
   }
 end
 
+-- typescript 快捷键
+pluginKeys.mapTsLSP = function(mapbuf)
+  -- import 整理
+  mapbuf("n", "gs", ":TSLspOrganize<CR>", opt)
+  -- 文件名修改
+  mapbuf("n", "gr", ":TSLspRenameFile<CR>", opt)
+  -- 自动导入
+  mapbuf("n", "gi", ":TSLspImportAll<CR>", opt)
+end
+
 return pluginKeys

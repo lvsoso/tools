@@ -10,6 +10,7 @@ local servers = {
   cssls = require("lsp.config.css"),
   emmet_ls = require("lsp.config.emmet"),
   jsonls = require("lsp.config.json"),
+  tsserver = require("lsp.config.ts"),
 }
 -- 自动安装 Language Servers
 for name, _ in pairs(servers) do
