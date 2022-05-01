@@ -115,3 +115,17 @@ cargo install stylua
 ```shell
 :TSInstall css scss json html vue javascript typescript
 ```
+
+# Rust 语法高亮与代码提示
+
+### rust 相关安装
+```shell
+curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+rustup component add rustfmt
+
+```
+
+
+```shell
+:TSInstall rust
+```

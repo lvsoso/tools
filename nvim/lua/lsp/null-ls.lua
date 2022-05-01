@@ -35,9 +35,23 @@ null_ls.setup({
       },
       prefer_local = "node_modules/.bin",
     }),
-    -- formatting.fixjson,
-    -- formatting.black.with({ extra_args = { "--fast" } }),
 
+    -- formatting.fixjson,
+
+    -- rustfmt
+    formatting.rustfmt,
+
+    -- Python
+    -- pip install black
+    -- asdf reshim python
+    formatting.black.with({ extra_args = { "--fast" } }),
+    -----------------------------------------------------
+    --
+    -- Ruby
+    -- gem install rubocop
+    formatting.rubocop,
+    -----------------------------------------------------
+    --
 
     -- npm install -D prettier eslint
     -- Diagnostics  ---------------------
