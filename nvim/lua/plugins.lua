@@ -85,6 +85,10 @@ packer.startup({
 
     -- Rust 增强
     use("simrat39/rust-tools.nvim")
+
+    -- vimspector
+    use("puremourning/vimspector")
+
   end,
   config = {
     -- 并发数限制

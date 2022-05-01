@@ -253,6 +253,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/lv/.local/share/nvim/site/pack/packer/start/vim-vsnip",
     url = "https://github.com/hrsh7th/vim-vsnip"
+  },
+  vimspector = {
+    loaded = true,
+    path = "/home/lv/.local/share/nvim/site/pack/packer/start/vimspector",
+    url = "https://github.com/puremourning/vimspector"
   }
 }
 

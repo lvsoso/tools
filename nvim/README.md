@@ -129,3 +129,15 @@ rustup component add rustfmt
 ```shell
 :TSInstall rust
 ```
+
+# Debug
+
+想要在 Neovim 中打断点来调试应用程序，需要基于 DAP (Debug Adapter Protocol) 协议，这是一个跨平台的调试协议，可以在不同的平台上调试不同的程序。
+
+在 Neovim 中基于 DAP 的插件有两个选择，一个是 vimspector ，另一个是 nvim-dap。
+
+```shell
+# 安装完成，安装 vimspector 支持的 debug 端适配器
+cd ~/.local/share/nvim/site/pack/packer/start/vimspector/
+./install_gadget.py --all
+```
