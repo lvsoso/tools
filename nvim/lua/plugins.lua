@@ -70,6 +70,9 @@ packer.startup({
 
     -- indent-blankline 对齐
     use("lukas-reineke/indent-blankline.nvim")
+
+    -- 重命名等命令替换
+    use("tami5/lspsaga.nvim")
   end,
   config = {
     -- 并发数限制
