@@ -50,3 +50,8 @@ https://github.com/sharkdp/fd/releases
 ## 插件扩展
 https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
 先在 plugins 里进行添加，再再对应插件配置里引入；
+
+
+## 语法高亮
+https://github.com/nvim-treesitter/nvim-treesitter#supported-languages
+

@@ -40,7 +40,9 @@ packer.startup({
     use("glepnir/dashboard-nvim")
     -- project
     use("ahmedkhalf/project.nvim")
-
+    -- treesitter 语法高亮
+    -- run Packer.nvim Post-install hook
+    use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
     -------------------------------------------------------
   end,
   config = {

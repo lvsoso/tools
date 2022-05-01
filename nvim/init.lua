@@ -19,3 +19,4 @@ require("plugin-config.telescope")
 -- 启动页面
 require("plugin-config.dashboard")
 require("plugin-config.project")
+require("plugin-config.nvim-treesitter")
