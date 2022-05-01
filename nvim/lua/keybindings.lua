@@ -18,9 +18,7 @@ local opt = {
 -- 本地变量
 local map = vim.api.nvim_set_keymap
 
-
 -- map('模式', '按键', '映射为', 'options')
-
 
 ------------------------------------------------------------------
 -- windows 分屏快捷键
@@ -107,7 +105,6 @@ pluginKeys.nvimTreeList = {
   { key = "s", action = "system_open" },
 }
 
-
 -- bufferline
 -- 左右Tab切换
 map("n", "<C-h>", ":BufferLineCyclePrev<CR>", opt)
@@ -193,7 +190,9 @@ pluginKeys.mapLSP = function(mapbuf)
   mapbuf("n", "gp", "<cmd>Lspsaga show_line_diagnostics<CR>", opt)
   mapbuf("n", "gj", "<cmd>Lspsaga diagnostic_jump_next<cr>", opt)
   mapbuf("n", "gk", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opt)
+
   mapbuf("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opt)
+  -- mapbuf("n", "<leader>f", ":Format", opt)
   -- 没用到
   -- mapbuf('n', '<leader>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opt)
   -- mapbuf("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opt)
@@ -212,7 +211,7 @@ pluginKeys.cmp = function(cmp)
     -- 取消
     ["<A-,>"] = cmp.mapping({
       i = cmp.mapping.abort(),
-      c = cmp.mapping.close()
+      c = cmp.mapping.close(),
     }),
     -- 上一个
     ["<C-k>"] = cmp.mapping.select_prev_item(),
@@ -221,7 +220,7 @@ pluginKeys.cmp = function(cmp)
     -- 确认
     ["<CR>"] = cmp.mapping.confirm({
       select = true,
-      behavior = cmp.ConfirmBehavior.Replace
+      behavior = cmp.ConfirmBehavior.Replace,
     }),
     -- 如果窗口内容太多，可以滚动
     ["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),

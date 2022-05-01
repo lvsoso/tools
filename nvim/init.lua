@@ -1,8 +1,8 @@
 -- 基础设置
-require('basic')
-require('keybindings')
+require("basic")
+require("keybindings")
 -- Packer 插件管理
-require('plugins')
+require("plugins")
 -- 主题设置 （新增）
 require("colorscheme")
 -- 插件配置
@@ -27,3 +27,6 @@ require("lsp.cmp")
 require("lsp.ui")
 -- 对齐线
 require("plugin-config.indent-blankline")
+-- 格式化
+-- require("lsp.formatter")
+require("lsp.null-ls")

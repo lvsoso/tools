@@ -96,3 +96,18 @@ nvim-cmp 是使用 Lua 编写的 补全引擎 插件。
 
 
 
+## 代码格式化
+
+### mhartington/formatter.nvim
+
+- lua https://github.com/JohnnyMorganz/StyLua
+
+```shell
+cargo install stylua
+
+# 配置完成后
+:Format
+```
+### nul-ls.vim
+- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
+

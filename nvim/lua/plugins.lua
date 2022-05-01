@@ -3,7 +3,7 @@ local packer = require("packer")
 packer.startup({
   function(use)
     -- Packer 可以管理自己本身
-    use 'wbthomason/packer.nvim'
+    use("wbthomason/packer.nvim")
     --------------------- colorschemes --------------------
     -- tokyonight
     use("folke/tokyonight.nvim")
@@ -32,9 +32,9 @@ packer.startup({
     use("arkav/lualine-lsp-progress")
 
     -- telescope 模糊搜索
-    use { 'nvim-telescope/telescope.nvim', requires = { "nvim-lua/plenary.nvim" } }
+    use({ "nvim-telescope/telescope.nvim", requires = { "nvim-lua/plenary.nvim" } })
     -- telescope extensions
-    use "LinArcX/telescope-env.nvim"
+    use("LinArcX/telescope-env.nvim")
 
     -- dashboard-nvim 启动页与项目列表
     use("glepnir/dashboard-nvim")
@@ -73,6 +73,10 @@ packer.startup({
 
     -- 重命名等命令替换
     use("tami5/lspsaga.nvim")
+
+    -- 代码格式化
+    -- use("mhartington/formatter.nvim")
+    use({ "jose-elias-alvarez/null-ls.nvim", requires = "nvim-lua/plenary.nvim" })
   end,
   config = {
     -- 并发数限制
@@ -92,7 +96,6 @@ packer.startup({
     },
   },
 })
-
 
 -- 每次保存 plugins.lua 自动安装插件
 pcall(
