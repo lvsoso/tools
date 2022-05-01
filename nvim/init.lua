@@ -13,4 +13,9 @@ require("plugin-config.bufferline")
 -- 底下栏
 require("plugin-config.lualine")
 
+-- 搜索插件
 require("plugin-config.telescope")
+
+-- 启动页面
+require("plugin-config.dashboard")
+require("plugin-config.project")

@@ -35,6 +35,12 @@ packer.startup({
     use { 'nvim-telescope/telescope.nvim', requires = { "nvim-lua/plenary.nvim" } }
     -- telescope extensions
     use "LinArcX/telescope-env.nvim"
+
+    -- dashboard-nvim 启动页与项目列表
+    use("glepnir/dashboard-nvim")
+    -- project
+    use("ahmedkhalf/project.nvim")
+
     -------------------------------------------------------
   end,
   config = {
