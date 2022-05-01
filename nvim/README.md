@@ -83,3 +83,16 @@ https://github.com/nvim-treesitter/nvim-treesitter#supported-languages
 ### 相关语言配置项
 https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 
+## 自动补全
+- 补全引擎：提供代码补全核心插件
+- 补全源：补全引擎数据来源
+- snippet引擎： 自定义代码段引擎
+
+nvim-cmp 是使用 Lua 编写的 补全引擎 插件。
+
+可以配置多种外部的补全源，
+
+支持 vsnip、luasnip、snippy、 ultisnips 4 种 snippet 引擎 。
+
+
+

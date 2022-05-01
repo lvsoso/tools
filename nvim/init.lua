@@ -23,3 +23,7 @@ require("plugin-config.nvim-treesitter")
 
 -- lsp server
 require("lsp.setup")
+require("lsp.cmp")
+require("lsp.ui")
+-- 对齐线
+require("plugin-config.indent-blankline")

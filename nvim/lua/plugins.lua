@@ -25,8 +25,8 @@ packer.startup({
     use({ "kyazdani42/nvim-tree.lua", requires = "kyazdani42/nvim-web-devicons" })
 
     -- bufferline buffer 图形化
-    use({ "akinsho/bufferline.nvim", requires = { "kyazdani42/nvim-web-devicons", "moll/vim-bbye" }})
-    
+    use({ "akinsho/bufferline.nvim", requires = { "kyazdani42/nvim-web-devicons", "moll/vim-bbye" } })
+
     -- lualine
     use({ "nvim-lualine/lualine.nvim", requires = { "kyazdani42/nvim-web-devicons" } })
     use("arkav/lualine-lsp-progress")
@@ -46,10 +46,30 @@ packer.startup({
     -------------------------------------------------------
 
     --------------------- LSP --------------------
-    -- 锁定在指定的 commit 
+    -- 锁定在指定的 commit
     use({ "williamboman/nvim-lsp-installer", commit = "36b44679f7cc73968dbb3b09246798a19f7c14e0" })
     -- Lspconfig
     use({ "neovim/nvim-lspconfig" })
+
+    -- 补全引擎
+    use("hrsh7th/nvim-cmp")
+    -- snippet 引擎
+    use("hrsh7th/vim-vsnip")
+    -- 补全源
+    use("hrsh7th/cmp-vsnip")
+    use("hrsh7th/cmp-nvim-lsp") -- { name = nvim_lsp }
+    use("hrsh7th/cmp-buffer") -- { name = 'buffer' },
+    use("hrsh7th/cmp-path") -- { name = 'path' }
+    use("hrsh7th/cmp-cmdline") -- { name = 'cmdline' }
+
+    -- 常见编程语言代码段
+    use("rafamadriz/friendly-snippets")
+
+    -- ui 图标显示
+    use("onsails/lspkind-nvim")
+
+    -- indent-blankline 对齐
+    use("lukas-reineke/indent-blankline.nvim")
   end,
   config = {
     -- 并发数限制
@@ -63,9 +83,9 @@ packer.startup({
     },
     -- 浮动窗口打开安装列表
     display = {
-        open_fn = function()
-            return require("packer.util").float({ border = "single" })
-        end,
+      open_fn = function()
+        return require("packer.util").float({ border = "single" })
+      end,
     },
   },
 })
