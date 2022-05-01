@@ -1,5 +1,4 @@
 
-
 https://github.com/nshen/learn-neovim-lua
 
 https://www.nerdfonts.com/font-downloads
@@ -10,6 +9,15 @@ https://github.com/junegunn/vim-plug
 # 安装 packer nvim 包管理器
 git clone --depth 1 https://github.com/wbthomason/packer.nvim\
  ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+
+# 全局搜索 Telescope 依赖
+sudo add-apt-repository ppa:x4121/ripgrep
+sudo apt-get update
+sudo apt install ripgrep
+
+# fd-find
+https://github.com/sharkdp/fd/releases
+
 ```
 
 ## 包管理插件
@@ -39,4 +47,6 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 - lua插件 https://github.com/folke/tokyonight.nvim#plugin-support
 
 
-
+## 插件扩展
+https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
+先在 plugins 里进行添加，再再对应插件配置里引入；

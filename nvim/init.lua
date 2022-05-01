@@ -12,3 +12,5 @@ require("plugin-config.nvim-tree")
 require("plugin-config.bufferline")
 -- 底下栏
 require("plugin-config.lualine")
+
+require("plugin-config.telescope")
