@@ -89,6 +89,16 @@ _G.packer_plugins = {
     path = "/home/lv/.local/share/nvim/site/pack/packer/start/nord.nvim",
     url = "https://github.com/shaunsingh/nord.nvim"
   },
+  ["nvim-tree.lua"] = {
+    loaded = true,
+    path = "/home/lv/.local/share/nvim/site/pack/packer/start/nvim-tree.lua",
+    url = "https://github.com/kyazdani42/nvim-tree.lua"
+  },
+  ["nvim-web-devicons"] = {
+    loaded = true,
+    path = "/home/lv/.local/share/nvim/site/pack/packer/start/nvim-web-devicons",
+    url = "https://github.com/kyazdani42/nvim-web-devicons"
+  },
   ["oceanic-next"] = {
     loaded = true,
     path = "/home/lv/.local/share/nvim/site/pack/packer/start/oceanic-next",
