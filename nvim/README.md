@@ -55,3 +55,31 @@ https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions
 ## 语法高亮
 https://github.com/nvim-treesitter/nvim-treesitter#supported-languages
 
+## LSP
+```shell
+:h lsp
+```
+- 安装 nvim-lspconfig
+- 安装对应 language server
+- 配置对应语言 require('lspconfig').xx.setup{…}
+- :lua print(vim.inspect(vim.lsp.buf_get_clients())) 查看 LSP 连接状态
+
+### 相关插件
+- https://github.com/neovim/nvim-lspconfig
+- https://github.com/williamboman/nvim-lsp-installer
+
+### 相关操作
+```shell
+:LspInstallInfo
+```
+- 大写的 X 是卸载该 server
+- u 是更新 server
+- 大写 U 更新所有 servers
+- c 检查 server 新版本
+- 大写 C 检查所有 servers 的新版本
+- ESC 关闭窗口
+- ? 显示其他帮助信息
+
+### 相关语言配置项
+https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+

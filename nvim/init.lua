@@ -20,3 +20,6 @@ require("plugin-config.telescope")
 require("plugin-config.dashboard")
 require("plugin-config.project")
 require("plugin-config.nvim-treesitter")
+
+-- lsp server
+require("lsp.setup")
