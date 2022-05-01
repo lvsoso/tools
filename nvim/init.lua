@@ -31,4 +31,5 @@ require("plugin-config.indent-blankline")
 -- require("lsp.formatter")
 require("lsp.null-ls")
 
-require("dap.vimspector") -- lua/dap/vimspector/init.lua
+-- require("dap.vimspector") -- lua/dap/vimspector/init.lua
+require("dap.nvim-dap")

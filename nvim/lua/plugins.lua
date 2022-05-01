@@ -89,6 +89,11 @@ packer.startup({
     -- vimspector
     use("puremourning/vimspector")
 
+    -- nvim dap
+    use("mfussenegger/nvim-dap")
+    use("theHamsta/nvim-dap-virtual-text")
+    use("rcarriga/nvim-dap-ui")
+
   end,
   config = {
     -- 并发数限制
