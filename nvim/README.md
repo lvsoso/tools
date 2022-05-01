@@ -111,3 +111,7 @@ cargo install stylua
 ### nul-ls.vim
 - https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
 
+# 前端代码高亮
+```shell
+:TSInstall css scss json html vue javascript typescript
+```

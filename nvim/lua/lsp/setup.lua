@@ -6,6 +6,10 @@ local lsp_installer = require("nvim-lsp-installer")
 -- https://github.com/williamboman/nvim-lsp-installer#available-lsps
 local servers = {
   sumneko_lua = require("lsp.config.lua"), -- lua/lsp/config/lua.lua
+  html = require("lsp.config.html"),
+  cssls = require("lsp.config.css"),
+  emmet_ls = require("lsp.config.emmet"),
+  jsonls = require("lsp.config.json"),
 }
 -- 自动安装 Language Servers
 for name, _ in pairs(servers) do
@@ -19,13 +23,13 @@ for name, _ in pairs(servers) do
 end
 
 lsp_installer.on_server_ready(function(server)
-    local config = servers[server.name]
-    if config == nil then
-        return
-    end
-    if config.on_setup then
-        config.on_setup(server)
-    else
-        server:setup({})
-    end
+  local config = servers[server.name]
+  if config == nil then
+    return
+  end
+  if config.on_setup then
+    config.on_setup(server)
+  else
+    server:setup({})
+  end
 end)
