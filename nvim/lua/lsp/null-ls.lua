@@ -19,7 +19,7 @@ null_ls.setup({
     -- frontend
     formatting.prettier.with({
       filetypes = {
-        --        "markdown",
+        -- "markdown",
         "javascript",
         "javascriptreact",
         "typescript",
@@ -32,6 +32,8 @@ null_ls.setup({
         "json",
         "yaml",
         "graphql",
+        "go",
+        "c",
       },
       prefer_local = "node_modules/.bin",
     }),

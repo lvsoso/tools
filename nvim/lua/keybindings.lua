@@ -257,7 +257,9 @@ end
 -- nvim-dap
 pluginKeys.mapDAP = function()
   -- 开始
-  map("n", "<leader>dd", ":RustDebuggables<CR>", opt)
+  map("n", "<leader>dr", ":RustDebuggables<CR>", opt)
+  map("n", "<leader>dg", ":Debug test<CR>", opt)
+
   -- 结束 (dapui无法自动关闭可能是bug，手动关闭能想到的一切)
   map(
     "n",
@@ -282,4 +284,9 @@ pluginKeys.mapDAP = function()
   -- 弹窗
   map("n", "<leader>dh", ":lua require'dapui'.eval()<CR>", opt)
 end
+
+-- unit test
+map("n", "<leader>rr", "<cmd>UltestNearest<cr>", opt)
+map("n", "<leader>rd", "<cmd>UltestDebugNearest<cr>", opt)
+
 return pluginKeys

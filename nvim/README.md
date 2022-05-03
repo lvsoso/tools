@@ -141,3 +141,10 @@ rustup component add rustfmt
 cd ~/.local/share/nvim/site/pack/packer/start/vimspector/
 ./install_gadget.py --all
 ```
+
+# go 相关配置
+
+https://github.com/leoluz/nvim-dap-go
+https://pepa.holla.cz/2022/02/02/debugging-go-in-neovim/
+
+https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#Go
