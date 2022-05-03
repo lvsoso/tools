@@ -9,10 +9,13 @@ local servers = {
   html = require("lsp.config.html"),
   cssls = require("lsp.config.css"),
   emmet_ls = require("lsp.config.emmet"),
+  bashls = require("lsp.config.bash"),
+  pyright = require("lsp.config.pyright"),
   jsonls = require("lsp.config.json"),
   tsserver = require("lsp.config.ts"),
-
+  clangd = require("lsp.config.clangd"),
   rust_analyzer = require("lsp.config.rust"),
+  gopls = require("lsp.config.go"),
 }
 -- 自动安装 Language Servers
 for name, _ in pairs(servers) do

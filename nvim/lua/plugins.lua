@@ -94,6 +94,14 @@ packer.startup({
     use("theHamsta/nvim-dap-virtual-text")
     use("rcarriga/nvim-dap-ui")
 
+    -- test
+    use({ "rcarriga/vim-ultest", requires = { "vim-test/vim-test" }, run = ":UpdateRemotePlugins" })
+
+    -- go dap
+    -- use { "leoluz/nvim-dap-go" }
+    use({ "ray-x/go.nvim" })
+
+    use({ "stevearc/aerial.nvim" })
   end,
   config = {
     -- 并发数限制

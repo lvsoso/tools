@@ -33,3 +33,6 @@ require("lsp.null-ls")
 
 -- require("dap.vimspector") -- lua/dap/vimspector/init.lua
 require("dap.nvim-dap")
+
+-- 单元测试
+require("plugin-config.vim-ultest")
