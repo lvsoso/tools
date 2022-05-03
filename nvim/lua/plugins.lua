@@ -101,6 +101,7 @@ packer.startup({
     -- use { "leoluz/nvim-dap-go" }
     use({ "ray-x/go.nvim" })
 
+    use({ "stevearc/aerial.nvim" })
   end,
   config = {
     -- 并发数限制

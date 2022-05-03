@@ -289,4 +289,6 @@ end
 map("n", "<leader>rr", "<cmd>UltestNearest<cr>", opt)
 map("n", "<leader>rd", "<cmd>UltestDebugNearest<cr>", opt)
 
+-- outline
+map("n", "<leader>o", "<cmd>AerialToggle<cr>", opt)
 return pluginKeys

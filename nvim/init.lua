@@ -36,3 +36,6 @@ require("dap.nvim-dap")
 
 -- 单元测试
 require("plugin-config.vim-ultest")
+
+-- 大纲
+require("plugin-config.aerial")
