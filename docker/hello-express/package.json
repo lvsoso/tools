@@ -1,0 +1,15 @@
+{
+  "name": "hello-express",
+  "version": "1.0.0",
+  "description": "```shell npm init npm install --save express ```",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "type": "module"
+}
