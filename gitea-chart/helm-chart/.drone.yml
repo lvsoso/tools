@@ -1,0 +1,104 @@
+---
+kind: pipeline
+type: docker
+name: lint
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: helm lint
+  pull: always
+  image: alpine:3.17
+  commands:
+  - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
+  - helm lint
+
+- name: helm template
+  pull: always
+  image: alpine:3.17
+  commands:
+  - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
+  - helm dependency update
+  - helm template --debug gitea-helm .
+
+- name: helm unittests
+  pull: always
+  image: alpine:3.17
+  commands:
+  - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing make helm git bash
+  - helm plugin install https://github.com/heyhabito/helm-unittest
+  - helm dependency update
+  - make unittests
+
+- name: verify readme
+  pull: always
+  image: alpine:3.17
+  commands:
+  - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing make npm git
+  - make readme
+  - git diff --exit-code --name-only README.md
+
+- name: discord
+  pull: always
+  image: appleboy/drone-discord:1.2.4
+  environment:
+    DISCORD_WEBHOOK_ID:
+      from_secret: discord_webhook_id
+    DISCORD_WEBHOOK_TOKEN:
+      from_secret: discord_webhook_token
+  when:
+    status:
+    - changed
+    - failure
+
+
+---
+kind: pipeline
+type: docker
+name: release-version
+
+platform:
+  os: linux
+  arch: arm64
+
+trigger:
+  event:
+  - tag
+
+steps:
+- name: generate-chart
+  pull: always
+  image: alpine:3.17
+  commands:
+    - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
+    - apk add --no-cache curl
+    - helm dependency update
+    - helm package --version "${DRONE_TAG##v}" ./
+    - mkdir gitea
+    - mv gitea*.tgz gitea/
+    - curl -L -o gitea/index.yaml https://dl.gitea.io/charts/index.yaml
+    - helm repo index gitea/ --url https://dl.gitea.io/charts --merge gitea/index.yaml
+
+- name: upload-chart
+  pull: always
+  image: plugins/s3:latest
+  settings:
+    acl:
+      from_secret: aws_s3_acl
+    region:
+      from_secret: aws_s3_region
+    bucket:
+      from_secret: aws_s3_bucket
+    endpoint:
+      from_secret: aws_s3_endpoint
+    path_style:
+      from_secret: aws_s3_path_style
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    source: gitea/*
+    target: /charts
+    strip_prefix: gitea/

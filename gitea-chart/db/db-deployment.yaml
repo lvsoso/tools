@@ -1,0 +1,43 @@
+# Kubernetes API version
+apiVersion: apps/v1
+# Deployment object
+kind: Deployment
+metadata:
+  # The name of the Deployment
+  name: postgresdb
+spec:
+  # Replicas for this Deployment
+  replicas: 1
+  selector:
+    # labels the pods
+    matchLabels:
+      app: postgresdb
+  template:
+    metadata:
+      labels:
+        # The label the pods created from the pod template should have
+        app: postgresdb
+    spec:
+      containers:
+        # The container name to execute pods
+        - name: postgresdb
+          # pull postgresimage from docker hub
+          image: postgres:11.9
+          ports:
+            # Assign ports to expose container
+            - containerPort: 5432
+          envFrom:
+            # Load the environment variables/PostgresSQL credentials
+            - configMapRef:
+                # This should be the ConfigMap name created ealier
+                name: db-secret-credentials
+          volumeMounts:
+            # The volume mounts  for the container
+            - mountPath: /var/lib/postgres/data
+              name: db-data
+      # Volumes attached to the pod
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            # reference the PersistentVolumeClaim
+            claimName: db-persistent-volume-claim

@@ -1,0 +1,1 @@
+kubectl exec -it postgresdb-66c5f9677d-8hprg exec -- psql -h localhost -Ugitea --password -p 5432 gitea
