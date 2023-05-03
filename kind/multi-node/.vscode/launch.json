@@ -20,6 +20,8 @@
                 "BACKUP_NODE_LABEL":"{\"app-backup\":\"true\"}",
                 "MASTER_SVC_SELECTOR":"{\"app\": \"nginx-master\"}",
                 "BACKUP_SVC_SELECTOR":"{\"app\":\"nginx-backup\"}",
+                "MASTER_NODE_PVC":"master-data",
+                "BACKUP_NODE_PVC":"backup-data",
                 "LEASE_LOCK_NAME":"test",
                 "LEASE_MODE":"true"
             }

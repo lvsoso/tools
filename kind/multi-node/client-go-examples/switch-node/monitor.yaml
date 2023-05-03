@@ -45,6 +45,10 @@ spec:
           value: "test"
         - name: "LEASE_MODE"
           value: "false"
+        - name : "MASTER_NODE_PVC"
+          value : "master-data"
+        - name : "BACKUP_NODE_PVC"
+          value : "backup-data"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

@@ -53,6 +53,9 @@ var (
 	masterNodeLabel        = map[string]string{"app-master": "true"}
 	backupNodeLabel        = map[string]string{"app-backup": "true"}
 
+	masterNodePvc = ""
+	backupNodePvc = ""
+
 	masterSvcSelector = map[string]string{"app": "nginx-master"}
 	backupSvcSelector = map[string]string{"app": "nginx-backup"}
 
@@ -83,6 +86,10 @@ func init() {
 	backupNodeLabelEnv := os.Getenv("BACKUP_NODE_LABEL")
 	masterSvcSelectorEnv := os.Getenv("MASTER_SVC_SELECTOR")
 	backupSvcSelectorEnv := os.Getenv("BACKUP_SVC_SELECTOR")
+
+	// pvc
+	masterNodePvc = os.Getenv("MASTER_NODE_PVC")
+	backupNodePvc = os.Getenv("BACKUP_NODE_PVC")
 
 	leaseLockName = os.Getenv("LEASE_LOCK_NAME")
 	leaseMode = os.Getenv("LEASE_MODE")
@@ -318,7 +325,7 @@ func check(ctx context.Context, clientset *kubernetes.Clientset) {
 	switch choiceNode {
 	case master:
 		if whereTargetClient != master {
-			err = updateStatefulSetsClient(ctx, stsClient, targetStsClientName, masterNodeLabel, master)
+			err = updateStatefulSetsClient(ctx, stsClient, targetStsClientName, masterNodeLabel, master, masterNodePvc)
 			if err != nil {
 				errStage("update client failed", targetStsClientName, err.Error())
 			}
@@ -335,7 +342,7 @@ func check(ctx context.Context, clientset *kubernetes.Clientset) {
 
 	case backup:
 		if whereTargetClient != backup {
-			err = updateStatefulSetsClient(ctx, stsClient, targetStsClientName, backupNodeLabel, backup)
+			err = updateStatefulSetsClient(ctx, stsClient, targetStsClientName, backupNodeLabel, backup, backupNodePvc)
 			if err != nil {
 				errStage("update client failed", targetStsClientName, err.Error())
 			}
@@ -353,7 +360,7 @@ func check(ctx context.Context, clientset *kubernetes.Clientset) {
 
 }
 
-func updateStatefulSetsClient(ctx context.Context, stsClient v1.StatefulSetInterface, targetName string, nodeSelector map[string]string, node string) error {
+func updateStatefulSetsClient(ctx context.Context, stsClient v1.StatefulSetInterface, targetName string, nodeSelector map[string]string, node string, pvc string) error {
 	sts, err := stsClient.Get(ctx, targetName, metav1.GetOptions{})
 	if err != nil {
 		return err
@@ -378,6 +385,10 @@ func updateStatefulSetsClient(ctx context.Context, stsClient v1.StatefulSetInter
 		})
 	}
 	sts.Spec.Template.Spec.Containers[0].Env = env
+
+	volumes := sts.Spec.Template.Spec.Volumes
+	volumes[0].PersistentVolumeClaim.ClaimName = pvc
+	sts.Spec.Template.Spec.Volumes = volumes
 
 	return retry.RetryOnConflict(
 		retry.DefaultRetry, func() error {

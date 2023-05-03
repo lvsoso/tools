@@ -18,6 +18,13 @@ spec:
         image: docker.io/library/nginx:1.16
         ports:
         - containerPort: 80
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+      volumes:
+        - name: www
+          persistentVolumeClaim:
+            claimName: master-data
       nodeSelector:
         app-master: "true"
 ---
@@ -42,6 +49,13 @@ spec:
         image: docker.io/library/nginx:1.16
         ports:
         - containerPort: 80
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+      volumes:
+        - name: www
+          persistentVolumeClaim:
+            claimName: backup-data
       nodeSelector:
         app-backup: "true"
 
