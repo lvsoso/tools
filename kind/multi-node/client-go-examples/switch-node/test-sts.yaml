@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mystatefulset
+spec:
+  selector:
+    matchLabels:
+      app: my-test-app
+  serviceName: my-test-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: my-test-app
+    spec:
+      containers:
+      - name: my-test-app
+        image: docker.io/library/nginx:1.16
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+      volumes:
+        - name: www
+          persistentVolumeClaim:
+            claimName: mypvc

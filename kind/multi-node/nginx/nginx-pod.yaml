@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: docker.io/library/nginx:1.16
+    ports:
+      - containerPort: 80
+  # nodeName: dev4-control-plane

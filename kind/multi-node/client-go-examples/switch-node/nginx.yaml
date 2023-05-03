@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx-master
+spec:
+  selector:
+    matchLabels:
+      app: nginx-master
+  serviceName: nginx-master
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-master
+    spec:
+      containers:
+      - name: nginx-master
+        image: docker.io/library/nginx:1.16
+        ports:
+        - containerPort: 80
+      nodeSelector:
+        app-master: "true"
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx-backup
+spec:
+  selector:
+    matchLabels:
+      app: nginx-backup
+  serviceName: nginx-backup
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-backup
+    spec:
+      containers:
+      - name: nginx-backup
+        image: docker.io/library/nginx:1.16
+        ports:
+        - containerPort: 80
+      nodeSelector:
+        app-backup: "true"
+
+# ---
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: nginx-master
+# spec:
+#   selector:
+#     matchLabels:
+#       app: nginx-master
+#   template:
+#     metadata:
+#       labels:
+#         app: nginx-master
+#     spec:
+#       containers:
+#       - name: nginx-master
+#         image: docker.io/library/nginx:1.16
+#         resources:
+#           limits:
+#             memory: "128Mi"
+#             cpu: "500m"
+#         ports:
+#         - containerPort: 80
+#       nodeSelector:
+#         app-master: "true"
+# ---
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: nginx-backup
+# spec:
+#   selector:
+#     matchLabels:
+#       app: nginx-backup
+#   template:
+#     metadata:
+#       labels:
+#         app: nginx-backup
+#     spec:
+#       containers:
+#       - name: nginx-backup
+#         image: docker.io/library/nginx:1.16
+#         resources:
+#           limits:
+#             memory: "128Mi"
+#             cpu: "500m"
+#         ports:
+#         - containerPort: 80
+#       nodeSelector:
+#         app-backup: "true"

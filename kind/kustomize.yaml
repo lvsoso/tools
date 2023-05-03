@@ -1,0 +1,15 @@
+# FluxCD 部署策略
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: hello-world-flask
+spec:
+  # 每 5 秒钟运行一次工作负载差异对比
+  interval: 5s
+  # path 参数表示deployment.yaml 位于仓库的根目录中
+  path: ./
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: hello-world-flask
+  targetNamespace: default

@@ -1,0 +1,99 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: test-monitor-master
+# spec:
+#   selector:
+#     matchLabels:
+#       app: test-monitor-master
+#   template:
+#     metadata:
+#       labels:
+#         app: test-monitor-master
+#     spec:
+#       containers:
+#       - name: test-monitor-master
+#         image: docker.io/library/nginx:1.16
+#         env:
+#         - name: NODE_ROLE
+#           value: master
+
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: test-monitor-backup
+# spec:
+#   selector:
+#     matchLabels:
+#       app: test-monitor-backup
+#   template:
+#     metadata:
+#       labels:
+#         app: test-monitor-backup
+#     spec:
+#       containers:
+#       - name: test-monitor-backup
+#         image: docker.io/library/nginx:1.16
+#         env:
+#         - name: NODE_ROLE
+#           value: backup
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: test-monitor
+  labels:
+    app: test-monitor
+spec:
+  selector:
+    matchLabels:
+      app: test-monitor
+  template:
+    metadata:
+      labels:
+        app: test-monitor
+    spec:
+      serviceAccountName: test  # 配置服务账号
+      containers:
+      - name:  test-monitor
+        image:   test-in-cluster:v1
+        command:
+          - "./app"
+        env:
+        - name: "NAMESPACE"
+          value: "default"
+        - name: "TARGET_SVC_NAME"
+          value: "nginx"
+        - name: "TARGET_STS_MASTER_NAME"
+          value: "nginx-master"
+        - name: "TARGET_STS_BACKUP_NAME"
+          value: "nginx-backup"
+        - name: "TARGET_STS_CLIENT_NAME"
+          value: "worker"
+        - name: "MASTER_NODE_LABEL"
+          value: "{\"app-master\":\"true\"}"
+        - name: "BACKUP_NODE_LABEL"
+          value: "{\"app-backup\":\"true\"}"
+        - name: "MASTER_SVC_SELECTOR"
+          value: "{\"app\": \"nginx-master\"}"
+        - name: "BACKUP_SVC_SELECTOR"
+          value: "{\"app\":\"nginx-backup\"}"
+        - name: "LEASE_LOCK_NAME"
+          value: "test"
+        - name: "LEASE_MODE"
+          value: "true"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: app-master
+                operator: In
+                values:
+                - "true"
+            - matchExpressions:
+              - key: app-backup
+                operator: In
+                values:
+                - "true"

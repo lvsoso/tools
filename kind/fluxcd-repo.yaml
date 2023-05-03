@@ -1,0 +1,10 @@
+# FluxCD 仓库连接信息
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: hello-world-flask
+spec:
+  interval: 5s
+  ref:
+    branch: main
+  url: https://github.com/lvsoso/fluxcd-demo

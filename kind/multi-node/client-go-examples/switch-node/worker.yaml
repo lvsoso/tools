@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: worker
+spec:
+  selector:
+    matchLabels:
+      app: worker
+  serviceName: worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      nodeSelector:
+        app-master: "true"
+      containers:
+      - name: worker
+        image: docker.io/library/nginx:1.16
+        ports:
+        - containerPort: 80
+          name: web
