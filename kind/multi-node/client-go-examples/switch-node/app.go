@@ -244,7 +244,7 @@ func check(ctx context.Context, clientset *kubernetes.Clientset) {
 	// check service
 	targetSvc, err := clientset.CoreV1().Services(namespace).Get(ctx, targetSvcName, metav1.GetOptions{})
 	if err != nil {
-		errStage("miss", targetStsClientName, err.Error())
+		errStage("miss", targetSvcName, err.Error())
 		return
 	}
 
