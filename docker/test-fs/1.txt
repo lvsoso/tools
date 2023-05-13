@@ -1,0 +1,5 @@
+mkdir /tmp/test-fs && cd /tmp/test-fs && prove -rv /code/pjdfstest/tests
+
+cd git && make test
+
+cd gitea && go test  -race  -tags='sqlite sqlite_unlock_notify' code.gitea.io/gitea/modules/git
