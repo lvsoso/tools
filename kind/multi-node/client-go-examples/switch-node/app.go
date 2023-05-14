@@ -112,9 +112,9 @@ func init() {
 //
 // https://jimmysong.io/kubernetes-handbook/concepts/pod-lifecycle.html
 func isPodAlive(pod apicorev1.Pod) bool {
-	if pod.Status.Phase == apicorev1.PodFailed {
-		return false
-	}
+	// if pod.Status.Phase == apicorev1.PodFailed {
+	// 	return false
+	// }
 
 	for _, psc := range pod.Status.Conditions {
 		if psc.Type == apicorev1.PodReady {
@@ -406,6 +406,8 @@ func updateStatefulSetsClient(ctx context.Context, stsClient v1.StatefulSetInter
 	volumes := sts.Spec.Template.Spec.Volumes
 	volumes[0].PersistentVolumeClaim.ClaimName = pvc
 	sts.Spec.Template.Spec.Volumes = volumes
+
+	sts.Spec.Template.Spec.Affinity = nil
 
 	return retry.RetryOnConflict(
 		retry.DefaultRetry, func() error {
