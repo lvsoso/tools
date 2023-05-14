@@ -13,11 +13,17 @@ spec:
       labels:
         app: nginx-master
     spec:
+      terminationGracePeriodSeconds:  90
       containers:
       - name: nginx-master
         image: docker.io/library/nginx:1.16
         ports:
         - containerPort: 80
+        readinessProbe:
+          tcpSocket:
+              port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 10
         volumeMounts:
         - name: www
           mountPath: /usr/share/nginx/html
@@ -27,6 +33,7 @@ spec:
             claimName: master-data
       nodeSelector:
         app-master: "true"
+
 ---
 
 apiVersion: apps/v1
@@ -44,6 +51,7 @@ spec:
       labels:
         app: nginx-backup
     spec:
+      terminationGracePeriodSeconds:  90
       containers:
       - name: nginx-backup
         image: docker.io/library/nginx:1.16
@@ -52,12 +60,19 @@ spec:
         volumeMounts:
         - name: www
           mountPath: /usr/share/nginx/html
+        readinessProbe:
+          tcpSocket:
+              port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 10
       volumes:
         - name: www
           persistentVolumeClaim:
             claimName: backup-data
       nodeSelector:
         app-backup: "true"
+
+---
 
 # ---
 

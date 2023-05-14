@@ -108,8 +108,22 @@ func init() {
 	leaseLockNamespace = namespace
 }
 
+//	https://www.qikqiak.com/k8strain/k8s-basic/pod-life/
+//
+// https://jimmysong.io/kubernetes-handbook/concepts/pod-lifecycle.html
 func isPodAlive(pod apicorev1.Pod) bool {
-	return pod.Status.Phase == apicorev1.PodRunning
+	if pod.Status.Phase == apicorev1.PodFailed {
+		return false
+	}
+
+	for _, psc := range pod.Status.Conditions {
+		if psc.Type == apicorev1.PodReady {
+			return psc.Status == apicorev1.ConditionTrue
+		}
+	}
+
+	// return pod.Status.Phase == apicorev1.PodRunning
+	return false
 }
 
 func stage(msg ...interface{}) {
@@ -321,6 +335,9 @@ func check(ctx context.Context, clientset *kubernetes.Clientset) {
 		choiceNode = backup
 	}
 
+	// println(stsClient)
+	// println(svcClient)
+	// println(choiceNode)
 	// update
 	switch choiceNode {
 	case master:

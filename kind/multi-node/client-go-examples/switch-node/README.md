@@ -1,21 +1,23 @@
 #### 运行
 ```shell
-NAMESPACE="default"
-TARGET_SVC_NAME="nginx"
-TARGET_STS_MASTER_NAME="nginx-master"
-TARGET_STS_BACKUP_NAME="nginx-backup"
-TARGET_STS_CLIENT_NAME="worker"
-MASTER_NODE_LABEL='{"app-master":"true"}'
-BACKUP_NODE_LABEL='{"app-backup":"true"}'
-MASTER_SVC_SELECTOR='{"app": "nginx-master"}'
-BACKUP_SVC_SELECTOR='{"app":"nginx-backup"}'
+export NAMESPACE="default"
+export TARGET_SVC_NAME="nginx"
+export TARGET_STS_MASTER_NAME="nginx-master"
+export TARGET_STS_BACKUP_NAME="nginx-backup"
+export TARGET_STS_CLIENT_NAME="worker"
+export MASTER_NODE_LABEL='{"app-master":"true"}'
+export BACKUP_NODE_LABEL='{"app-backup":"true"}'
+export MASTER_SVC_SELECTOR='{"app": "nginx-master"}'
+export BACKUP_SVC_SELECTOR='{"app":"nginx-backup"}'
 
-MASTER_NODE_PVC="master-data"
-BACKUP_NODE_PVC="backup-data"
+export MASTER_NODE_PVC="master-data"
+export BACKUP_NODE_PVC="backup-data"
 
-LEASE_LOCK_NAME="test"
+export LEASE_LOCK_NAME="test"
 # 没有权限的情况下，设置为"false"
-LEASE_MODE="true"
+export LEASE_MODE="false"
+export MASTER_NODE_PVC="master-data"
+export BACKUP_NODE_PVC="backup-data"
 
 go run app.go
 ```
