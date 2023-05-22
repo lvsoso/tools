@@ -1,0 +1,14 @@
+# mkdir -p prometheus/config
+# mkdir -p prometheus/data
+# chown -R nobody:nogroup prometheus/data
+
+version: "3.3"
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.37.8
+    volumes:
+      - ./prometheus/config:/etc/prometheus
+      - ./prometheus/data:/prometheus
+    ports:
+      - 19090:9090
