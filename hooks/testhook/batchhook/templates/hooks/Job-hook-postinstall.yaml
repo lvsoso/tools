@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-hook-postinstall
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
+spec:
+  template:
+    spec:
+      containers:
+        - name: post-install-1
+          image: ubuntu:mantic-20230807.1
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "wget --timeout=5 https://google.com"]
+        - name: post-install-2
+          image: ubuntu:mantic-20230807.1
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "echo post-install Pod is Running ; sleep 10"]
+        - name: post-install-3
+          image: ubuntu:mantic-20230807.1
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "echo post-install Pod is Running ; sleep 10"]
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 0
+
+  backoffLimit: 3
+  completions: 1
+  parallelism: 1

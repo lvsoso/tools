@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-hook-preinstall
+  annotations:
+    "helm.sh/hook": "pre-install"
+
+spec:
+  template:
+    spec:
+      containers:
+        - name: pre-install
+          image: busybox
+          imagePullPolicy: IfNotPresent
+
+          command: ["sh", "-c", "echo pre-install Job Pod is Running ; sleep 5"]
+
+      restartPolicy: OnFailure
+      terminationGracePeriodSeconds: 0
+
+  backoffLimit: 3
+  completions: 1
+  parallelism: 1
