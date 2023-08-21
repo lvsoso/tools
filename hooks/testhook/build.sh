@@ -1,3 +1,3 @@
 #! /bin/bash
 
-docker build . -t hook:0.1
+docker build . -t lvsoso/hook:0.1
