@@ -1,0 +1,12 @@
+[Unit]
+Description=Local CD Service
+After=network.target
+
+[Service]
+Type=idle
+Restart=on-failure
+User=root
+ExecStart=/home/lv/anaconda3/bin/python /home/lv/lvsoso/tools/cicd/local-cd/main.py 9999
+
+[Install]
+WantedBy=multi-user.target
