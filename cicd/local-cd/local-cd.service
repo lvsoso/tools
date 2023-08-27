@@ -6,7 +6,7 @@ After=network.target
 Type=idle
 Restart=on-failure
 User=root
-ExecStart=/home/lv/anaconda3/bin/python /home/lv/lvsoso/tools/cicd/local-cd/main.py 9999
+ExecStart=/home/lv/anaconda3/bin/python /home/lv/lvsoso/tools/cicd/local-cd/main.py 9999 /home/lv/lvsoso/tools/cicd/local-cd/docker-compose.yaml
 
 [Install]
 WantedBy=multi-user.target

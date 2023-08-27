@@ -6,9 +6,9 @@ import base64
 from docker_compose_helper import update_image
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
+# default
+file_path = os.path.join(os.path.split(os.path.abspath(__file__))[0], "docker-compose.yaml")
 
-DIR_NAME, _ = os.path.split(os.path.abspath(__file__))
-FILE_NAME = "docker-compose.yaml"
 USERNAME = "root"
 PASSWORD = ""
 
@@ -47,7 +47,7 @@ class Handler(BaseHTTPRequestHandler):
                 if line == "":
                     break
 
-        code = update_image(DIR_NAME, FILE_NAME, env, show)
+        code = update_image(file_path, env, show)
 
         # return result
         print(code)
@@ -58,9 +58,10 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python3 main.py <port>")
+    if len(sys.argv) < 3:
+        print("Usage: python3 main.py <port> <yaml file>")
         exit(1)
     port = int(sys.argv[1])
+    file_path =   sys.argv[2]
     httpd = HTTPServer(('localhost', port), Handler)
     httpd.serve_forever()

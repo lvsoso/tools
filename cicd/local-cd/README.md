@@ -35,7 +35,7 @@ sudo systemctl enable local-cd.service
 ```shell
 # start a service
 sudo systemctl start local-cd.service
-sudo systemctl start local-cd.service
+sudo systemctl status local-cd.service
 
 # stop a service
 sudo systemctl stop local-cd.service

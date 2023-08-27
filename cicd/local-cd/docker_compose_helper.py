@@ -9,30 +9,29 @@ ref: https://stackoverflow.com/questions/61973128/python-subprocess-for-docker-c
 
 class DockercomposeRun:
 
-    def __init__(self, dir_name):
-        self.dirname = dir_name
+    def __init__(self):
         self.root_command = "/usr/local/bin/docker-compose"
 
     def run(self, commands: list, env: dict):
         popen = subprocess.Popen(commands, env=env, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
         return popen
 
-    def up(self, filename, env: dict):
-        commands = [self.root_command, "-f", os.path.join(self.dirname, filename), "up", "-d"]
+    def up(self, file_path, env: dict):
+        commands = [self.root_command, "-f", file_path, "up", "-d"]
         return self.run(commands, env)
 
-    def down(self, filename, env: dict):
-        commands = [self.root_command, "-f", os.path.join(self.dirname, filename), "down"]
+    def down(self, file_path, env: dict):
+        commands = [self.root_command, "-f", file_path, "down"]
         return self.run(commands, env)
     
-    def force_recreate(self, filename, env: dict):
-        commands = [self.root_command, "-f", os.path.join(self.dirname, filename), "up", "-d", "--force-recreate"]
+    def force_recreate(self, file_path, env: dict):
+        commands = [self.root_command, "-f", file_path, "up", "-d", "--force-recreate"]
         return self.run(commands, env)
 
-def update_image( dir_name, filename, env:dict, logger_func):
-    dcr = DockercomposeRun(dir_name)
+def update_image( file_path, env:dict, logger_func):
+    dcr = DockercomposeRun()
     try:
-        rc = dcr.force_recreate(filename, env)
+        rc = dcr.force_recreate(file_path, env)
         logger_func(rc.stdout)
         rc.stdout.close()
         logger_func(rc.stderr)
@@ -64,5 +63,6 @@ def show(output):
 if __name__ == "__main__":
     dir_name, _ = os.path.split(os.path.abspath(__file__))
     filename = "docker-compose.yaml"
+    file_path = os.path.join(dir_name, filename)
     env = {"IMAGE": "nginx", "TAG": "1.17"}
-    print(update_image(dir_name, filename, env, show))
+    print(update_image(file_path, env, show))
