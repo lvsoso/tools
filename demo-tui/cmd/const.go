@@ -13,3 +13,8 @@ const (
 	repoRootDir = `repo-root`
 	parallels   = `parallel`
 )
+
+// scan
+const (
+	targetDir = `target-dir`
+)

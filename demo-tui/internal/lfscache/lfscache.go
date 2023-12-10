@@ -2,6 +2,7 @@ package lfscache
 
 import (
 	"crypto/sha256"
+	"demo-tui/internal/gitop"
 	"demo-tui/log"
 	"encoding/hex"
 	"errors"
@@ -29,6 +30,7 @@ size %d
 type Object struct {
 	name      string
 	src       string
+	dst       string
 	oid       string
 	size      int64
 	cachePath string
@@ -99,8 +101,22 @@ func LfsCache(sourceDir string, repoRootDir string, parallels int) error {
 		return errors.New("empty source dir or repo root url")
 	}
 
+	// find .gitattributes
+	attrFile := filepath.Join(repoRootDir, ".gitattributes")
+	_, err := os.Stat(attrFile)
+	if os.IsNotExist(err) {
+		return errors.New("not found .gitattributes")
+	} else if err != nil {
+		return err
+	}
+
+	matcher, err := gitop.NewMatcher(attrFile)
+	if err != nil {
+		return err
+	}
+
 	// lfs  file filter rule ?
-	err := initDir(repoRootDir)
+	err = initDir(repoRootDir)
 	if err != nil {
 		return err
 	}
@@ -124,8 +140,20 @@ func LfsCache(sourceDir string, repoRootDir string, parallels int) error {
 	concurrent := make(chan int, parallels)
 
 	for idx, srcfile := range srcFiles {
+		dstPath := filepath.Join(repoRootDir, strings.Replace(srcfile, sourceDir, "", 1))
+		logger.Infof("dstPath: %s", dstPath)
+		matched, err := matcher.MatchLfs(dstPath)
+		if err != nil {
+			return err
+		}
+		if !matched {
+			logger.Infof("dstPath: %s            !matched", dstPath)
+			continue
+		}
+
 		concurrent <- idx
 		wg.Add(1)
+		objests[idx].dst = dstPath
 		go process(srcfile, repoRootDir, &objests[idx], &wg, concurrent)
 	}
 
@@ -134,10 +162,13 @@ func LfsCache(sourceDir string, repoRootDir string, parallels int) error {
 
 	for _, o := range objests {
 		logger.Infof("%+v", o)
-		dstPath := filepath.Join(repoRootDir, strings.Replace(o.src, sourceDir, "", 1))
-		logger.Infof("dstPath: %s", dstPath)
-		if _, err := os.Stat(dstPath); os.IsNotExist(err) {
-			err := os.MkdirAll(filepath.Dir(dstPath), 0755)
+		if o.dst == "" {
+			logger.Infof("srcPath: %s   skipped", o.src)
+			continue
+		}
+
+		if _, err := os.Stat(o.dst); os.IsNotExist(err) {
+			err := os.MkdirAll(filepath.Dir(o.dst), 0755)
 			if err != nil {
 				return err
 			}
@@ -145,7 +176,7 @@ func LfsCache(sourceDir string, repoRootDir string, parallels int) error {
 
 		// write pointer
 		pointer := fmt.Sprintf(lfsPointerTemplate, o.oid, o.size)
-		f, err := os.OpenFile(dstPath, os.O_CREATE|os.O_WRONLY, 0644)
+		f, err := os.OpenFile(o.dst, os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			return err
 		}

@@ -14,9 +14,14 @@ type ScanResult struct {
 	Level  ScanLevel
 	Path   string
 	Detail interface{}
+	Sha256 string
 }
 
 type Scaner interface {
-	ScanDir(ctx context.Context, dirPath []string) ([]ScanResult, error)
-	ScanFile(ctx context.Context, filePath string) (ScanResult, error)
+	Scan(ctx context.Context, dirPath string) ([]ScanResult, error)
+}
+
+func RunScan(ctx context.Context, dirPath string) ([]ScanResult, error) {
+
+	return nil, nil
 }
