@@ -140,14 +140,23 @@ func LfsCache(sourceDir string, repoRootDir string, parallels int) error {
 	concurrent := make(chan int, parallels)
 
 	for idx, srcfile := range srcFiles {
+		sf, err := os.Stat(srcfile)
+		if err != nil && os.IsNotExist(err) {
+			continue
+		} else if err != nil {
+			return err
+		}
+
 		dstPath := filepath.Join(repoRootDir, strings.Replace(srcfile, sourceDir, "", 1))
 		logger.Infof("dstPath: %s", dstPath)
 		matched, err := matcher.MatchLfs(dstPath)
 		if err != nil {
 			return err
 		}
-		if !matched {
+		if !matched && sf.Size() < 10*1024*1024 {
 			logger.Infof("dstPath: %s            !matched", dstPath)
+			objests[idx].src = srcfile
+			objests[idx].dst = ""
 			continue
 		}
 
