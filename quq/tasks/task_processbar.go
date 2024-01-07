@@ -74,7 +74,7 @@ func handleProcessBarTask(
 			return
 		default:
 		}
-		processStep <- p.Count
+		processStep <- int64(i)
 	}
 
 }
