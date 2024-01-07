@@ -20,11 +20,12 @@ import (
 type storage struct {
 	backend fs.Fs
 	Config  *config.TargetConfig
+	ctx     context.Context
 }
 
 func (s *storage) Get(path string) (f File, err error) {
 	create := func(key string) (value interface{}, ok bool, err error) {
-		ctx, cancel := context.WithTimeout(context.Background(), s.Config.Timeout)
+		ctx, cancel := context.WithTimeout(s.ctx, s.Config.Timeout)
 		defer cancel()
 
 		o, err := s.backend.NewObject(ctx, key)
@@ -44,7 +45,7 @@ func (s *storage) Get(path string) (f File, err error) {
 }
 
 func (s *storage) Exists(path string) bool {
-	ctx, cancel := context.WithTimeout(context.Background(), s.Config.Timeout)
+	ctx, cancel := context.WithTimeout(s.ctx, s.Config.Timeout)
 	defer cancel()
 
 	if ok, _ := fs.FileExists(ctx, s.backend, path); ok {
@@ -54,8 +55,8 @@ func (s *storage) Exists(path string) bool {
 	return false
 }
 
-func (s *storage) Put(path string, in io.ReadCloser, metadata ...*HTTPOption) (File, error) {
-	o, err := s.put(path, in, metadata...)
+func (s *storage) Put(path string, in io.ReadCloser, size int64, metadata ...*HTTPOption) (File, error) {
+	o, err := s.put(path, in, size, metadata...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +64,7 @@ func (s *storage) Put(path string, in io.ReadCloser, metadata ...*HTTPOption) (F
 	return ObjectWrapper(o), nil
 }
 
-func (s *storage) PutFile(dir string, in io.ReadCloser, metadata ...*HTTPOption) (File, error) {
+func (s *storage) PutFile(dir string, in io.ReadCloser, size int64, metadata ...*HTTPOption) (File, error) {
 	body := &bytes.Buffer{}
 	mime, err := mimetype.DetectReader(io.TeeReader(in, body))
 	if err != nil {
@@ -73,7 +74,7 @@ func (s *storage) PutFile(dir string, in io.ReadCloser, metadata ...*HTTPOption)
 	id := xid.New().String()
 	extension := mime.Extension()
 
-	o, err := s.put(path.Join(dir, id+extension), io.NopCloser(body), metadata...)
+	o, err := s.put(path.Join(dir, id+extension), io.NopCloser(body), size, metadata...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,8 +82,8 @@ func (s *storage) PutFile(dir string, in io.ReadCloser, metadata ...*HTTPOption)
 	return ObjectWrapper(o), nil
 }
 
-func (s *storage) put(path string, in io.ReadCloser, metadata ...*fs.HTTPOption) (fs.Object, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), s.Config.Timeout)
+func (s *storage) put(path string, in io.ReadCloser, size int64, metadata ...*fs.HTTPOption) (fs.Object, error) {
+	ctx, cancel := context.WithTimeout(s.ctx, s.Config.Timeout)
 	defer cancel()
 
 	var options []fs.OpenOption
@@ -90,7 +91,7 @@ func (s *storage) put(path string, in io.ReadCloser, metadata ...*fs.HTTPOption)
 		options = append(options, option)
 	}
 
-	objInfo := object.NewStaticObjectInfo(path, time.Now(), -1, false, nil, nil)
+	objInfo := object.NewStaticObjectInfo(path, time.Now(), size, false, nil, nil)
 	o, err := s.backend.Put(ctx, in, objInfo, options...)
 	if err != nil {
 		return nil, err
@@ -100,7 +101,7 @@ func (s *storage) put(path string, in io.ReadCloser, metadata ...*fs.HTTPOption)
 }
 
 func (s *storage) Delete(paths ...string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), s.Config.Timeout)
+	ctx, cancel := context.WithTimeout(s.ctx, s.Config.Timeout)
 	defer cancel()
 
 	delChan := make(fs.ObjectsChan)
@@ -118,7 +119,7 @@ func (s *storage) Delete(paths ...string) error {
 	return <-delErr
 }
 
-func NewStorage(name string, cfg *config.TargetConfig) (*storage, error) {
+func NewStorage(ctx context.Context, name string, cfg *config.TargetConfig) (*storage, error) {
 	if cfg.Timeout == 0 {
 		cfg.Timeout = time.Second * 30
 	}
@@ -138,5 +139,6 @@ func NewStorage(name string, cfg *config.TargetConfig) (*storage, error) {
 	return &storage{
 		backend: backend,
 		Config:  cfg,
+		ctx:     ctx,
 	}, nil
 }

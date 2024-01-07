@@ -12,7 +12,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	qconfig "quq/config"
 	"quq/storage"
@@ -99,18 +98,18 @@ func handleLfsMigratePayload(
 		}
 	}()
 
-	count := 100
-	for i := 0; i < int(count); i++ {
-		time.Sleep(1 * time.Second)
-		Logger.Info(fmt.Sprintf("Count=%d", i))
-		select {
-		case <-ctx.Done():
-			Logger.Info("canceled recived")
-			return
-		default:
-		}
-		processStep <- int64(i)
-	}
+	// count := 100
+	// for i := 0; i < int(count); i++ {
+	// 	time.Sleep(1 * time.Second)
+	// 	Logger.Info(fmt.Sprintf("Count=%d", i))
+	// 	select {
+	// 	case <-ctx.Done():
+	// 		Logger.Info("canceled recived")
+	// 		return
+	// 	default:
+	// 	}
+	// 	processStep <- int64(i)
+	// }
 
 	tmpDir, err := os.MkdirTemp(os.TempDir(), "lfs-migrate")
 	if err != nil {
@@ -139,10 +138,12 @@ func handleLfsMigratePayload(
 		return
 	}
 
+	// filter lfs
+	total := 0
+	lfsObjs := []*MigrateObj{}
+
 	for _, o := range objs {
-		Logger.Info("hanlde ...", o.LocalPath)
-		// decode
-		lfsO, err := decode(o)
+		err := decode(o)
 		if err != nil {
 			if !errors.Is(err, ErrNotALfsFile) {
 				Logger.Error(err)
@@ -151,16 +152,29 @@ func handleLfsMigratePayload(
 			}
 			continue
 		}
+		Logger.Info("Is lfs pointer ...", o.LocalPath)
+		lfsObjs = append(lfsObjs, o)
+		total += 1
+	}
 
-		Logger.Info("Oid ...", lfsO.p.Oid, lfsO.p.Size)
-
-		// // migrate
-		// err = migrate(o)
-		// if err != nil {
-		// 	Logger.Error(err.Error())
-		// 	errorQueue <- err
-		// 	return
-		// }
+	// migrate
+	for idx, o := range lfsObjs {
+		Logger.Info("hanlde ...", o.LocalPath)
+		// migrate
+		err = migrate(ctx, o, p.SourceUri)
+		if err != nil {
+			Logger.Error(err.Error())
+			errorQueue <- err
+			return
+		}
+		processStep <- int64(idx)
+		Logger.Info("Oid ...", o.p.Oid, o.p.Size)
+		select {
+		case <-ctx.Done():
+			Logger.Info("canceled recived")
+			return
+		default:
+		}
 	}
 	Logger.Info("finished")
 }
@@ -209,8 +223,8 @@ type MigrateObj struct {
 	p          *lfs.Pointer
 }
 
-func getObjs(workDir string) ([]MigrateObj, error) {
-	mo := []MigrateObj{}
+func getObjs(workDir string) ([]*MigrateObj, error) {
+	mo := []*MigrateObj{}
 	err := filepath.Walk(workDir, func(path string, info fs.FileInfo, err error) error {
 		if strings.HasPrefix(path, filepath.Join(workDir, ".git")+"/") {
 			Logger.Info("skip '.git' ...")
@@ -222,7 +236,7 @@ func getObjs(workDir string) ([]MigrateObj, error) {
 
 		Logger.Info(path)
 
-		mo = append(mo, MigrateObj{
+		mo = append(mo, &MigrateObj{
 			LocalPath: path,
 			Size:      info.Size(),
 		})
@@ -235,35 +249,35 @@ func getObjs(workDir string) ([]MigrateObj, error) {
 	return mo, nil
 }
 
-func decode(m MigrateObj) (MigrateObj, error) {
+func decode(m *MigrateObj) error {
 	if m.Size > 1024 {
-		return m, ErrNotALfsFile
+		return ErrNotALfsFile
 	}
 
 	p, err := lfs.DecodePointerFromFile(m.LocalPath)
 	if p != nil {
 		m.p = p
-		return m, nil
+		return nil
 	}
 
 	if lfserrors.IsNotAPointerError(err) {
-		return m, ErrNotALfsFile
+		return ErrNotALfsFile
 	}
 
-	return m, err
+	return err
 }
 
-func migrate(m MigrateObj, gitUrl string) (MigrateObj, error) {
+func migrate(ctx context.Context, m *MigrateObj, gitUrl string) error {
 	batchResp, err := GetLinkObj(m, gitUrl)
 	if err != nil {
-		return m, err
+		return err
 	}
 
 	o := batchResp.Objects[0]
 	req, err := http.NewRequest("GET", o.Actions.Download.Href, nil)
 	if err != nil {
 		Logger.Error(err)
-		return m, err
+		return err
 	}
 	for k, v := range o.Actions.Download.Header {
 		req.Header.Set(k, v)
@@ -271,7 +285,7 @@ func migrate(m MigrateObj, gitUrl string) (MigrateObj, error) {
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		Logger.Error(err)
-		return m, err
+		return err
 	}
 	defer func() {
 		res.Body.Close()
@@ -281,13 +295,13 @@ func migrate(m MigrateObj, gitUrl string) (MigrateObj, error) {
 	tc, err := qconfig.Config.GetConfig(name)
 	if err != nil {
 		Logger.Error(err)
-		return m, ErrGetStorageConfig
+		return ErrGetStorageConfig
 	}
 
-	st, err := storage.NewStorage(name, tc)
+	st, err := storage.NewStorage(ctx, name, tc)
 	if err != nil {
 		Logger.Error(err)
-		return m, ErrCreateStorageFailed
+		return ErrCreateStorageFailed
 	}
 
 	// f, err := os.OpenFile("/tmp/init/boot4.img", os.O_RDONLY, os.ModePerm)
@@ -298,25 +312,21 @@ func migrate(m MigrateObj, gitUrl string) (MigrateObj, error) {
 	// defer f.Close()
 
 	// file, err := st.Put(m.TargetPath, f)
-	file, err := st.Put(m.TargetPath, res.Body)
-	// by, err := io.ReadAll(res.Body)
+	file, err := st.Put(m.TargetPath, res.Body, m.p.Size)
+
 	if err != nil {
 		Logger.Error(err)
-		return m, ErrGetLfsFileRead
+		return ErrGetLfsFileRead
 	}
-
-	// if len(by) != int(m.p.Size) {
-	// 	return m, ErrGetLfsFileMisMatchSize
-	// }
 
 	if int(file.Stat().Size()) != int(m.p.Size) {
-		return m, ErrGetLfsFileMisMatchSize
+		return ErrGetLfsFileMisMatchSize
 	}
 
-	return m, nil
+	return nil
 }
 
-func GetLinkObj(m MigrateObj, gitUrl string) (*BatchResp, error) {
+func GetLinkObj(m *MigrateObj, gitUrl string) (*BatchResp, error) {
 	bg := BatchReq{
 		Operation: "download",
 		Transfers: []string{"basic"},
