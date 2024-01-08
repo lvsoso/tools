@@ -304,14 +304,31 @@ func migrate(ctx context.Context, m *MigrateObj, gitUrl string) error {
 		return ErrCreateStorageFailed
 	}
 
-	// f, err := os.OpenFile("/tmp/init/boot4.img", os.O_RDONLY, os.ModePerm)
+	// f, err := os.OpenFile("/tmp/init/boot5.img", os.O_RDONLY, os.ModePerm)
 	// if err != nil {
 	// 	Logger.Error(err)
-	// 	return m, ErrGetLfsFileRead
+	// 	return ErrGetLfsFileRead
 	// }
 	// defer f.Close()
+	// rc := storage.NewReaderCloserCounter(f)
+	// innerDone := make(chan int)
+	// go func() {
+	// 	for {
+	// 		select {
+	// 		case <-innerDone:
+	// 			return
+	// 		case <-ctx.Done():
+	// 			Logger.Info("innerDone: canceled recived")
+	// 			return
+	// 		default:
+	// 		}
+	// 		Logger.Info("------------------------------------------------------ >", rc.Count())
+	// 		time.Sleep(10 * time.Second)
+	// 	}
+	// }()
 
-	// file, err := st.Put(m.TargetPath, f)
+	// file, err := st.Put(m.TargetPath, rc, 10737418240)
+
 	file, err := st.Put(m.TargetPath, res.Body, m.p.Size)
 
 	if err != nil {
